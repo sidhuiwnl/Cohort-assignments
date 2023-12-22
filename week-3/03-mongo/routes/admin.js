@@ -1,25 +1,46 @@
 const { Router } = require("express");
 const adminMiddleware = require("../middleware/admin");
+const { Admin,Course} = require("../db");
 const router = Router();
 
 // Admin Routes
-app.post('/signup', (req, res) => {
+router.post('/signup', async (req, res) => {
     // Implement admin signup logic
-    let adminUsername = req.headers.username
-    let adminPassword = req.headers.password
-    if((adminPassword === 'pass' && adminUsername === 'admin')){
-        res.status(200).json({msg : "Admin created successfully"})
-
-    }
+   const {username,password} = req.body;
+   const adminExist = await Admin.findOne({username});
+   if(adminExist){
+    res.status(404).json({msg : "admin already exisit"})
+   }else{
+    const admin = await Admin.create({username,password})
+    await admin.save()
+    res.status(200).json({msg : "admin succesfuly created"})
+   } 
 
 });
 
-app.post('/courses', adminMiddleware, (req, res) => {
+router.post('/courses', adminMiddleware, async(req, res) => {
     // Implement course creation logic
+    const username = req.body.username
+    const {title,description,price,image} = req.body;
+    const course =  Course.create({
+        id : generateUniqueId(),
+        title, 
+        description,
+        price,
+        image,
+        createdBy : {username}
+
+    })
+    await course.save()
+    res.json({msg : "Course created successfully"})
+
 });
 
-app.get('/courses', adminMiddleware, (req, res) => {
+router.get('/courses', adminMiddleware, async (req, res) => {
     // Implement fetching all courses logic
+    const username = req.headers.username;
+    const courses = await Course.find({createdBy : username});
+    res.status(202).json({ courses })
 });
 
 module.exports = router;
