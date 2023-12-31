@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script>
+    let globalId = 1;
+    let todoState = [];
+    let oldTodoState = [];
+
+    function addTodoToDom(todo) {
+      const title = todo.title;
+      const description = todo.title;
+      const id = todo.id;
+
+      const child = document.createElement('div');
+      div.setAttribute("id" , id);
+
+      const firstChild = document.createElement('h1');
+      h1.innerText = title;
+
+      const secondChild = document.createElement('p');
+      p.innerText = description;
+
+      
+
+
+      div.appendChild(firstChild);
+      div.appendChild(secondChild);
+
+      document.getElementById('todos').appendChild(child)
+
+    }
+
+    function removeTodoFromDom(todo) {
+      const element = document.getElementById(todo.id);
+      element.parentNode.removeChild(element)
+    }
+
+    function updateTodoInDom(oldTodo, newTodo) {
+      const element = document.getElementById(oldTodo.id);
+      element.children[0].innerText = newTodo.title;
+      element.children[1].innerText = newTodo.description;
+      
+    }
+
+    function updateState(newTodos) {
+      // calculate the diff b/w newTodos and oldTodos.
+      // More specifically, find out what todos are - 
+      // 1. added
+      // 2. deleted
+      // 3. updated
+
+      for(const newTodo of newTodos){
+
+      }
+      
+      const added = [];
+      const deleted = [];
+      const updated = [];
+      // calculate these 3 arrays
+      // call addTodo, removeTodo, updateTodo functions on each of the
+      // elements
+      oldTodoState = newTodos;
+    }
+
+    function addTodo() {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      todoState.push({
+        title: title,
+        description: description,
+        id: globalId++,
+      })
+      updateState(todoState);
+    }
+  </script>
+</head>
+
+<body>
+  <input type="text" id="title" placeholder="Todo title"></input> <br /><br />
+  <input type="text" id="description" placeholder="Todo description"></input> <br /><br />
+  <button onclick="addTodo()">Add todo</button>
+  <br /> <br />
+
+  <div id="todos">
+
+  </div>
+</body>
+
+</html>
