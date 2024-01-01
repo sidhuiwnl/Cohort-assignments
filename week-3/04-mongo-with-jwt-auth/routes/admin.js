@@ -4,7 +4,7 @@ const generateUniqueId = require('../utils');
 const adminMiddleware = require("../middleware/admin");
 const router = Router();
 var jwt = require('jsonwebtoken');
-const jwtPassword = "secret"
+
 
 
 
@@ -16,7 +16,7 @@ router.post('/signup', async(req, res) => {
     // Implement admin signup logic
     try {
         const token = req.headers.authorization;
-        const verifyAdmintoken = jwt.verify(token,jwtPassword);
+        const verifyAdmintoken = jwt.verify(token,process.env.JWT_KEY);
         if(verifyAdmintoken){
             res.status(400).json({
                 msg : "Valid admin"
@@ -34,7 +34,7 @@ router.post('/signup', async(req, res) => {
 router.post('/signin', async(req, res) => {
     // Implement admin signup logic
     const {username,password} = req.body;
-    const token = jwt.sign({username : username},jwtPassword);
+    const token = jwt.sign({username : username},process.env.JWT_KEY);
     if(!token){
         res.send(411).json({
             msg : "Invalid username and password"

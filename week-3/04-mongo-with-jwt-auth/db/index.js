@@ -21,7 +21,13 @@ const UserSchema = new mongoose.Schema({
     // Schema definition here
     id : {type : String, required : true, unique:true},
     username : {type : String, required : true, unique:true},
-    password : {type : String, required : true, unique:true}
+    password : {type : String, required : true, unique:true},
+    purchasedCourses: [
+        {
+          type: mongoose.Types.ObjectId,
+          ref: 'Course',
+        },
+    ],
 });
 
 const CourseSchema = new mongoose.Schema({
@@ -31,7 +37,7 @@ const CourseSchema = new mongoose.Schema({
     description : { type: String},
     price : { type: Number, required: true},
     image : {type: String},
-    createdBy : {type: String}
+   
 });
 
 const Admin = mongoose.model('Admin', AdminSchema);
