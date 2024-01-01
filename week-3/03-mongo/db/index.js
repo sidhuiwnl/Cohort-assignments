@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // Connect to MongoDB
 
-    mongoose.connect('mongodb+srv://sidharthinfernal:Seemasidhu999@cluster0.sv727p9.mongodb.net/ClassApp')
+    mongoose.connect('Mongo URL')
     .then(() => {
 console.log("successfully connected")        
     }).catch((err) => {

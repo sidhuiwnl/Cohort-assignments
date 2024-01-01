@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // Connect to MongoDB
 
-mongoose.connect('mongodb+srv://sidharthinfernal:123@cluster0.mod7lyl.mongodb.net/Courseapp')
+mongoose.connect('Mongo URl')
 .then(() => {
 console.log("successfully connected")        
 }).catch((err) => {
