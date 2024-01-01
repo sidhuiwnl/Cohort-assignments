@@ -1,8 +1,10 @@
 const { Router } = require("express");
-const { Admin } = require('../db/index');
+const { Admin , Course } = require('../db/index');
 const generateUniqueId = require('../utils');
 const adminMiddleware = require("../middleware/admin");
 const router = Router();
+var jwt = require('jsonwebtoken');
+const jwtPassword = "secret"
 
 
 
@@ -10,35 +12,70 @@ const router = Router();
 
 
 // Admin Routes
-router.post('/admin/signup', async(req, res) => {
+router.post('/signup', async(req, res) => {
     // Implement admin signup logic
-    
-    let  username = req.body.username
-    let  password = req.body.password
-        const adminExist = await Admin.findOne({username})
-        if(!adminExist){
-            const admin = await  Admin.create({
-                id : generateUniqueId(),
-                username,
-                password 
+    try {
+        const token = req.headers.authorization;
+        const verifyAdmintoken = jwt.verify(token,jwtPassword);
+        if(verifyAdmintoken){
+            res.status(400).json({
+                msg : "Valid admin"
             })
-            await admin.save()
-        }else{
-            res.json({msg : "user aldready exist"})
         }
+    } catch (error) {
+        res.json('JWT verification failed:', error);
+    }
+    
+
+    
     
 });
 
-router.post('admin/signin', (req, res) => {
+router.post('/signin', async(req, res) => {
     // Implement admin signup logic
+    const {username,password} = req.body;
+    const token = jwt.sign({username : username},jwtPassword);
+    if(!token){
+        res.send(411).json({
+            msg : "Invalid username and password"
+        })
+    }else{
+       const AdminCredentials = await Admin.create({
+        id : generateUniqueId(),
+        username : username,
+        password : password
+    })
+       if(AdminCredentials){
+        res.json({
+            msg : "Admin created and token genreated",
+            token
+        })
+       }
+    }
+    return token
+    
+
 });
 
-router.post('/courses', adminMiddleware, (req, res) => {
+router.post('/courses', adminMiddleware, async(req, res) => {
     // Implement course creation logic
+    const {title,description,price,image} = req.body;
+    const course = await Course.create({
+        id : generateUniqueId(),
+        title : title,
+        description : description,
+        price : price,
+        image : image,
+
+    })
+    course.save()
+    res.json({msg : "Course created"})
 });
 
-router.get('/courses', adminMiddleware, (req, res) => {
+router.get('/courses', adminMiddleware, async(req, res) => {
     // Implement fetching all courses logic
+    const findCourse = await Course.find();
+    res.json({findCourse})
 });
 
 module.exports = router;
